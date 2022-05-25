@@ -28,7 +28,7 @@ import Link from '@mui/material/Link';
 
 const uiConfig = {
   signInFlow: 'popup',
-  //   signInSuccessUrl: '/home',
+  //   signInSuccessUrl: '/dashboard',
   signInOptions: [
     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
@@ -41,7 +41,7 @@ const uiConfig = {
 };
 
 function Login() {
-  const { t } = useTranslation(['home']);
+  const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

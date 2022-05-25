@@ -1,4 +1,3 @@
-import Home from './features/home/pages/Home';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
 import { ThemeProvider } from '@mui/material/styles';
@@ -17,6 +16,7 @@ import { selectUser, setUser } from './features/auth/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ColorScheme } from './constants/theme';
 import { LightTheme, DarkTheme, DefaultTheme } from './utils/themes';
+import Dashboard from './features/dashboard/pages/Dashboard';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCFK6BeQKs_dMjJ5BNLqyQys38iCPRBU54',
@@ -63,12 +63,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Header />}>
-            {/* <Route index element={<Home />} /> */}
-            <Route element={<ProtectedRoute isAllowed={!currentUser} redirectPath="/home" />}>
+            {/* <Route index element={<Dashboard />} /> */}
+            <Route element={<ProtectedRoute isAllowed={!currentUser} redirectPath="/dashboard" />}>
               <Route path="/login" element={<Login />} />
             </Route>
             <Route element={<ProtectedRoute isAllowed={!!currentUser} redirectPath="/login" />}>
-              <Route path="/home" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="*" element={<p>There's nothing here: 404!</p>} />
           </Route>

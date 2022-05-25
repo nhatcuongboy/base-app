@@ -15,12 +15,11 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <Suspense
-        // fallback={
-        //   <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={true}>
-        //     <CircularProgress color="inherit" />
-        //   </Backdrop>
-        // }
-        fallback={null}
+        fallback={
+          <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={true}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        }
       >
         <App />
       </Suspense>
