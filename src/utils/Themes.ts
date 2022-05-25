@@ -5,6 +5,12 @@
 import { createTheme } from '@mui/material/styles';
 import { common } from "@mui/material/colors";
 
+declare module '@mui/material/styles' {
+  interface Theme extends Record<string, any> { }
+  // allow configuration using `createTheme`
+  interface ThemeOptions extends Record<string, any> { }
+}
+
 const ColorScheme = {
   LIGHT: 'light',
   DARK: 'dark',
@@ -13,7 +19,7 @@ const ColorScheme = {
 const LightTheme = createTheme({
   palette: {
     mode: 'light'
-  }, 
+  },
   body: {
     backgroundColor: common.white,
     textColor: common.black
@@ -23,7 +29,7 @@ const LightTheme = createTheme({
 const DarkTheme = createTheme({
   palette: {
     mode: 'dark'
-  }, 
+  },
   body: {
     backgroundColor: '#363537',
     textColor: common.white

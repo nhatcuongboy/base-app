@@ -1,11 +1,12 @@
-import styled from "styled-components";
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles';
 
-export const Title = styled.h1`
+export const Title = styled(Typography)`
 `
 
-export const TimeNow = styled.h3`
+export const TimeNow = styled(Typography)`
 `
+
 
 
 

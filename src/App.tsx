@@ -2,8 +2,7 @@ import Home from './features/home/pages/Home';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
 import { ColorScheme, DarkTheme, LightTheme } from './utils/Themes';
-import { ThemeProvider } from 'styled-components';
-import { GlobalStyles } from './utils/GlobalStyles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import React, { lazy, Suspense, useEffect } from 'react';
@@ -55,7 +54,6 @@ function App() {
 
   return (
     <ThemeProvider theme={currentTheme === ColorScheme.LIGHT ? LightTheme : DarkTheme}>
-      <GlobalStyles />
       <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={globalLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
