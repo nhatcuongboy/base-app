@@ -1,7 +1,6 @@
 import {
   Box,
   Container,
-  CssBaseline,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -21,6 +20,7 @@ import { vi } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import { selectUser } from 'src/features/auth/authSlice';
 
 function Home() {
   const currentTheme = useAppSelector(selectTheme);
@@ -28,6 +28,7 @@ function Home() {
   const [language, setLanguage] = useState(currentLanguage);
   const { t } = useTranslation(['home']);
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(changeLanguage(language));
@@ -35,7 +36,6 @@ function Home() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
       <Box
         sx={{
           display: 'flex',
@@ -43,8 +43,10 @@ function Home() {
           alignItems: 'center',
         }}
       >
-        <Title>{t('home:title')}</Title>
-        <p>Hello {firebase.auth()?.currentUser?.displayName}</p>
+        <Title variant="h5" sx={{ mb: 3 }}>
+          {t('home:title')}
+        </Title>
+        <p>{currentUser?.displayName}</p>
         <TimeNow>{format(new Date(), 'eeee', { locale: vi })}</TimeNow>
       </Box>
     </Container>

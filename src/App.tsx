@@ -1,9 +1,8 @@
 import Home from './features/home/pages/Home';
 import { useAppDispatch, useAppSelector } from './app/hooks';
 import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
-import { ColorScheme, DarkTheme, LightTheme } from './utils/Themes';
 import { ThemeProvider } from '@mui/material/styles';
-import { useMediaQuery } from '@mui/material';
+import { CssBaseline, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import React, { lazy, Suspense, useEffect } from 'react';
 import './languages/i18n';
@@ -16,6 +15,8 @@ import Header from './components/Header';
 import Login from './features/auth/pages/Login';
 import { selectUser, setUser } from './features/auth/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ColorScheme } from './constants/theme';
+import { LightTheme, DarkTheme, DefaultTheme } from './utils/themes';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCFK6BeQKs_dMjJ5BNLqyQys38iCPRBU54',
@@ -54,6 +55,7 @@ function App() {
 
   return (
     <ThemeProvider theme={currentTheme === ColorScheme.LIGHT ? LightTheme : DarkTheme}>
+      <CssBaseline />
       <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={globalLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>

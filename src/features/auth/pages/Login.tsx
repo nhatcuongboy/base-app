@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   Container,
-  CssBaseline,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -17,6 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +55,6 @@ function Login() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
       <Box
         sx={{
           marginTop: 8,
@@ -70,7 +69,7 @@ function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, mb: 1 }}>
           <TextField
             margin="normal"
             required
@@ -98,7 +97,7 @@ function Login() {
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>
-          <Grid container>
+          <Grid container sx={{ mb: 2 }}>
             <Grid item xs>
               <Link href="#" variant="body2">
                 Forgot password?
@@ -110,8 +109,10 @@ function Login() {
               </Link>
             </Grid>
           </Grid>
-          <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+          <Divider />
         </Box>
+        <Typography>Or</Typography>
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
       </Box>
     </Container>
   );

@@ -11,30 +11,27 @@ declare module '@mui/material/styles' {
   interface ThemeOptions extends Record<string, any> { }
 }
 
-const ColorScheme = {
-  LIGHT: 'light',
-  DARK: 'dark',
-};
+const DefaultTheme = createTheme();
 
 const LightTheme = createTheme({
   palette: {
     mode: 'light'
   },
-  body: {
-    backgroundColor: common.white,
-    textColor: common.black
-  },
+  // body: {
+  //   backgroundColor: common.white,
+  //   textColor: common.black
+  // },
 });
 
 const DarkTheme = createTheme({
   palette: {
     mode: 'dark'
   },
-  body: {
-    backgroundColor: '#363537',
-    textColor: common.white
-  },
+  // body: {
+  //   backgroundColor: '#363537',
+  //   textColor: common.white
+  // },
 });
 
 
-export { ColorScheme, LightTheme, DarkTheme };
+export { DefaultTheme, LightTheme, DarkTheme };
