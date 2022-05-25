@@ -1,57 +1,80 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import Home from './features/home/pages/Home';
+import { useAppDispatch, useAppSelector } from './app/hooks';
+import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
+import { ColorScheme, DarkTheme, LightTheme } from './utils/Themes';
+import { ThemeProvider } from 'styled-components';
+import { GlobalStyles } from './utils/GlobalStyles';
+import { useMediaQuery } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import React, { lazy, Suspense, useEffect } from 'react';
+import './languages/i18n';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import Header from './components/Header';
+import Login from './features/auth/pages/Login';
+import { selectUser, setUser } from './features/auth/authSlice';
+import ProtectedRoute from './components/ProtectedRoute';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyCFK6BeQKs_dMjJ5BNLqyQys38iCPRBU54',
+  authDomain: 'base-app-5bc9d.firebaseapp.com',
+  projectId: 'base-app-5bc9d',
+  storageBucket: 'base-app-5bc9d.appspot.com',
+  messagingSenderId: '356395499991',
+  appId: '1:356395499991:web:0a160f42b0de7e9d300b92',
+};
+
+firebase.initializeApp(firebaseConfig);
 
 function App() {
+  const currentTheme = useAppSelector(selectTheme);
+  const currentLanguage = useAppSelector(selectLanguage);
+  const dispatch = useAppDispatch();
+  const systemPrefersDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const { i18n } = useTranslation();
+  const globalLoading = false;
+  const currentUser = useAppSelector(selectUser);
+
+  // useEffect(() => {
+  //   dispatch(changeTheme(systemPrefersDark ? 'dark' : 'light'));
+  // }, [systemPrefersDark]);
+
+  useEffect(() => {
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
+      dispatch(setUser({ user }));
+    });
+    return () => unregisterAuthObserver();
+  }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(currentLanguage || 'en');
+  }, [currentLanguage]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <ThemeProvider theme={currentTheme === ColorScheme.LIGHT ? LightTheme : DarkTheme}>
+      <GlobalStyles />
+      <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={globalLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Header />}>
+            {/* <Route index element={<Home />} /> */}
+            <Route element={<ProtectedRoute isAllowed={!currentUser} redirectPath="/home" />}>
+              <Route path="/login" element={<Login />} />
+            </Route>
+            <Route element={<ProtectedRoute isAllowed={!!currentUser} redirectPath="/login" />}>
+              <Route path="/home" element={<Home />} />
+            </Route>
+            <Route path="*" element={<p>There's nothing here: 404!</p>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
