@@ -112,10 +112,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  const theme = useTheme();
   const currentTheme = useAppSelector(selectTheme);
   const currentUser = useAppSelector(selectUser);
-  const [theme, setTheme] = React.useState(currentTheme);
   const { t } = useTranslation(['']);
   const dispatch = useAppDispatch();
 
@@ -125,10 +124,6 @@ export default function Header() {
   React.useEffect(() => {
     dispatch(changeLanguage(language));
   }, [language]);
-
-  React.useEffect(() => {
-    dispatch(changeTheme(theme));
-  }, [theme]);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -184,9 +179,9 @@ export default function Header() {
             </IconButton>
           )}
           <Switch
-            checked={theme === 'dark' ? true : false}
+            checked={currentTheme === 'dark' ? true : false}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setTheme(e.target.checked ? 'dark' : 'light');
+              dispatch(changeTheme(e.target.checked ? 'dark' : 'light'));
             }}
           />
           <Select
