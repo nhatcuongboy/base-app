@@ -3,7 +3,7 @@
 // import spacing from './Spacing';
 // import typography from './Typography';
 import { createTheme } from '@mui/material/styles';
-import { common } from "@mui/material/colors";
+// import { common } from "@mui/material/colors";
 
 declare module '@mui/material/styles' {
   interface Theme extends Record<string, any> { }
