@@ -38,9 +38,9 @@ function App() {
   const globalLoading = false;
   const currentUser = useAppSelector(selectUser);
 
-  // useEffect(() => {
-  //   dispatch(changeTheme(systemPrefersDark ? 'dark' : 'light'));
-  // }, [systemPrefersDark]);
+  useEffect(() => {
+    dispatch(changeTheme(systemPrefersDark ? 'dark' : 'light'));
+  }, [systemPrefersDark]);
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
