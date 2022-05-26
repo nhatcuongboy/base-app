@@ -1,26 +1,12 @@
 import {
-  Box,
   Container,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
   Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
-  SelectChangeEvent,
-  Switch,
-  TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { changeLanguage, changeTheme, selectLanguage, selectTheme } from 'src/app/appSlice';
+import { changeLanguage, selectLanguage, selectTheme } from 'src/app/appSlice';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
-import { Title, TimeNow } from './Dashboard.styles';
-import { format } from 'date-fns';
-import { vi } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { selectUser } from 'src/features/auth/authSlice';
 import Chart from './Chart';

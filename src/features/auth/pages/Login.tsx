@@ -4,21 +4,14 @@ import {
   Button,
   Checkbox,
   Container,
-  FormControl,
   FormControlLabel,
-  FormGroup,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Switch,
   TextField,
   Typography,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import React from 'react';
+import { useAppDispatch } from 'src/app/hooks';
 import { useTranslation } from 'react-i18next';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';

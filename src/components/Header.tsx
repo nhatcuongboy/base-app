@@ -6,11 +6,9 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-  styled,
-  createTheme,
-  ThemeProvider,
-  Theme,
   CSSObject,
+  Theme,
+  styled,
   useTheme,
 } from '@mui/material/styles';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -24,7 +22,6 @@ import 'firebase/compat/auth';
 import { Outlet } from 'react-router-dom';
 import { selectUser } from 'src/features/auth/authSlice';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';

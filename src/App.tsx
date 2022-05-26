@@ -3,11 +3,11 @@ import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './languages/i18n';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Header from './components/Header';
@@ -15,7 +15,7 @@ import Login from './features/auth/pages/Login';
 import { selectUser, setUser } from './features/auth/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ColorScheme } from './constants/theme';
-import { LightTheme, DarkTheme, DefaultTheme } from './utils/themes';
+import { DarkTheme, LightTheme } from './utils/themes';
 import Dashboard from './features/dashboard/pages/Dashboard';
 
 const firebaseConfig = {
@@ -70,7 +70,7 @@ function App() {
             <Route element={<ProtectedRoute isAllowed={!!currentUser} redirectPath="/login" />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
-            <Route path="*" element={<p>There's nothing here: 404!</p>} />
+            <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -6,9 +6,9 @@ import { createTheme } from '@mui/material/styles';
 // import { common } from "@mui/material/colors";
 
 declare module '@mui/material/styles' {
-  interface Theme extends Record<string, any> { }
+  type Theme = Record<string, any>
   // allow configuration using `createTheme`
-  interface ThemeOptions extends Record<string, any> { }
+  type ThemeOptions = Record<string, any>
 }
 
 const DefaultTheme = createTheme();
