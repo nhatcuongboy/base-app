@@ -1,8 +1,4 @@
-import {
-  Container,
-  Grid,
-  Paper,
-} from '@mui/material';
+import { Container, Grid, Paper } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { changeLanguage, selectLanguage, selectTheme } from 'src/app/appSlice';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
@@ -12,6 +8,8 @@ import { selectUser } from 'src/features/auth/authSlice';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 function Dashboard() {
   const currentTheme = useAppSelector(selectTheme);
@@ -21,28 +19,21 @@ function Dashboard() {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
 
+  const { isLoading, error, data, isFetching } = useQuery('repoData', () =>
+    axios.get('https://api.github.com/repos/tannerlinsley/react-query').then((res) => res.data),
+  );
+
   useEffect(() => {
     dispatch(changeLanguage(language));
   }, [language]);
 
-  return (
-    // <Container component="main" maxWidth="xs">
-    //   <Box
-    //     sx={{
-    //       display: 'flex',
-    //       flexDirection: 'column',
-    //       alignItems: 'center',
-    //     }}
-    //   >
-    //     <Title variant="h5" sx={{ mb: 3 }}>
-    //       {t('dashboard:title')}
-    //     </Title>
-    //     <p>{currentUser?.displayName}</p>
-    //     <TimeNow>{format(new Date(), 'eeee', { locale: vi })}</TimeNow>
-    //   </Box>
-    // </Container>
+  if (isLoading) return <div>Loading...</div>;
 
+  return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <div>{isFetching ? 'Updating...' : 'Done'}</div>
+      <h1>{data.name}</h1>
+      <p>{data.description}</p>
       <Grid container spacing={3}>
         {/* Chart */}
         <Grid item xs={12} md={8} lg={9}>

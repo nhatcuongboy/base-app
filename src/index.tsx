@@ -6,23 +6,30 @@ import App from './App';
 import { PersistGate } from 'redux-persist/integration/react';
 import reportWebVitals from './reportWebVitals';
 import { Backdrop, CircularProgress } from '@mui/material';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
+
+const queryClient = new QueryClient();
 
 root.render(
   // <React.StrictMode>
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Suspense
-        fallback={
-          <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={true}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        }
-      >
-        <App />
-      </Suspense>
+      <QueryClientProvider client={queryClient}>
+        <Suspense
+          fallback={
+            <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={true}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          }
+        >
+          <App />
+        </Suspense>
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </PersistGate>
   </Provider>,
   // </React.StrictMode>
