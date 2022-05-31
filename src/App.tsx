@@ -17,6 +17,7 @@ import { DarkTheme, LightTheme } from './utils/themes';
 
 const Header = lazy(() => import('./components/Header'));
 const Login = lazy(() => import('./features/auth/pages/Login'));
+const SignUp = lazy(() => import('./features/auth/pages/SignUp'));
 const Dashboard = lazy(() => import('./features/dashboard/pages/Dashboard'));
 
 const firebaseConfig = {
@@ -67,6 +68,7 @@ function App() {
             <Route index element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
             <Route element={<ProtectedRoute isAllowed={!token} redirectPath="/dashboard" />}>
               <Route path="/login" element={<Login />} />
+              <Route path="/sign-up" element={<SignUp />} />
             </Route>
             <Route element={<ProtectedRoute isAllowed={!!token} redirectPath="/login" />}>
               <Route path="/dashboard" element={<Dashboard />} />

@@ -17,9 +17,9 @@ import { useTranslation } from 'react-i18next';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import Link from '@mui/material/Link';
 import { useLogin } from 'src/hooks/auth';
 import { LoadingButton } from '@mui/lab';
+import { Link } from 'react-router-dom';
 
 // const uiConfig = {
 //   signInFlow: 'popup',
@@ -48,6 +48,7 @@ function Login() {
       password: data.get('password'),
     });
   };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -101,14 +102,10 @@ function Login() {
           </LoadingButton>
           <Grid container sx={{ mb: 2 }}>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+              <Link to="#">Forgot password?</Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <Link to="/sign-up">{"Don't have an account? Sign Up"}</Link>
             </Grid>
           </Grid>
           {/* <Divider /> */}
