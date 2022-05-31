@@ -3,20 +3,21 @@ import { changeTheme, selectLanguage, selectTheme } from './app/appSlice';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy } from 'react';
 import './languages/i18n';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import firebase from 'firebase/compat/app';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Header from './components/Header';
-import Login from './features/auth/pages/Login';
-import { selectUser, setUser } from './features/auth/authSlice';
+import { selectToken, setUser } from './features/auth/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ColorScheme } from './constants/theme';
 import { DarkTheme, LightTheme } from './utils/themes';
-import Dashboard from './features/dashboard/pages/Dashboard';
+
+const Header = lazy(() => import('./components/Header'));
+const Login = lazy(() => import('./features/auth/pages/Login'));
+const Dashboard = lazy(() => import('./features/dashboard/pages/Dashboard'));
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCFK6BeQKs_dMjJ5BNLqyQys38iCPRBU54',
@@ -36,7 +37,7 @@ function App() {
   const systemPrefersDark = useMediaQuery('(prefers-color-scheme: dark)');
   const { i18n } = useTranslation();
   const globalLoading = false;
-  const currentUser = useAppSelector(selectUser);
+  const token = useAppSelector(selectToken);
 
   useEffect(() => {
     dispatch(changeTheme(systemPrefersDark ? 'dark' : 'light'));
@@ -63,11 +64,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Header />}>
-            {/* <Route index element={<Dashboard />} /> */}
-            <Route element={<ProtectedRoute isAllowed={!currentUser} redirectPath="/dashboard" />}>
+            <Route index element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
+            <Route element={<ProtectedRoute isAllowed={!token} redirectPath="/dashboard" />}>
               <Route path="/login" element={<Login />} />
             </Route>
-            <Route element={<ProtectedRoute isAllowed={!!currentUser} redirectPath="/login" />}>
+            <Route element={<ProtectedRoute isAllowed={!!token} redirectPath="/login" />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />

@@ -13,39 +13,40 @@ import Divider from '@mui/material/Divider';
 import React from 'react';
 import { useAppDispatch } from 'src/app/hooks';
 import { useTranslation } from 'react-i18next';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+// import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import Link from '@mui/material/Link';
+import { useLogin } from 'src/hooks/auth';
 
-const uiConfig = {
-  signInFlow: 'popup',
-  //   signInSuccessUrl: '/dashboard',
-  signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
-  ],
-  callbacks: {
-    // Avoid redirects after sign-in.
-    signInSuccessWithAuthResult: () => false,
-  },
-};
+// const uiConfig = {
+//   signInFlow: 'popup',
+//   //   signInSuccessUrl: '/dashboard',
+//   signInOptions: [
+//     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+//     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+//     firebase.auth.EmailAuthProvider.PROVIDER_ID,
+//   ],
+//   callbacks: {
+//     // Avoid redirects after sign-in.
+//     signInSuccessWithAuthResult: () => false,
+//   },
+// };
 
 function Login() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
+  const { status, data: response, mutate: login } = useLogin();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
+    login({
+      username: data.get('email'),
       password: data.get('password'),
     });
   };
-
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -102,10 +103,10 @@ function Login() {
               </Link>
             </Grid>
           </Grid>
-          <Divider />
+          {/* <Divider /> */}
         </Box>
-        <Typography>Or</Typography>
-        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+        {/* <Typography>Or</Typography> */}
+        {/* <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} /> */}
       </Box>
     </Container>
   );
