@@ -19,6 +19,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import Link from '@mui/material/Link';
 import { useLogin } from 'src/hooks/auth';
+import { LoadingButton } from '@mui/lab';
 
 // const uiConfig = {
 //   signInFlow: 'popup',
@@ -37,7 +38,7 @@ import { useLogin } from 'src/hooks/auth';
 function Login() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
-  const { status, data: response, mutate: login } = useLogin();
+  const { status, data: response, mutate: login, isLoading } = useLogin();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -88,9 +89,16 @@ function Login() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <LoadingButton
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            loading={isLoading}
+            loadingPosition="start"
+          >
             Sign In
-          </Button>
+          </LoadingButton>
           <Grid container sx={{ mb: 2 }}>
             <Grid item xs>
               <Link href="#" variant="body2">
