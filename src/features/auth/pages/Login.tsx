@@ -20,6 +20,9 @@ import 'firebase/compat/auth';
 import { useLogin } from 'src/hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import { Link } from 'react-router-dom';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
 // const uiConfig = {
 //   signInFlow: 'popup',
@@ -35,17 +38,30 @@ import { Link } from 'react-router-dom';
 //   },
 // };
 
+const LoginSchema = yup.object().shape({
+  username: yup.string().required(),
+  password: yup.string().required().min(8),
+  // password: yup.number().required().positive().integer(),
+  // website: yup.string().url()
+});
+
 function Login() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
   const { status, data: response, mutate: login, isLoading } = useLogin();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm({
+    resolver: yupResolver(LoginSchema),
+  });
+
+  const onSubmit = (data: any) => {
     login({
-      username: data.get('email'),
-      password: data.get('password'),
+      username: data.username,
+      password: data.password,
     });
   };
 
@@ -65,27 +81,32 @@ function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, mb: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1, mb: 1 }}>
+          <Controller
+            name="username"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField {...field} margin="normal" fullWidth label="Username" autoFocus />
+            )}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          {errors.username && <p>{errors.username.message}</p>}
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                margin="normal"
+                fullWidth
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+              />
+            )}
           />
+          {errors.password && <p>{errors.password.message}</p>}
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
@@ -96,7 +117,7 @@ function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
             loading={isLoading}
-            loadingPosition="start"
+            // loadingPosition="start"
           >
             Sign In
           </LoadingButton>
