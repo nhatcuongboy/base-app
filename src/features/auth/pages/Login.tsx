@@ -17,12 +17,16 @@ import { useTranslation } from 'react-i18next';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import { useLogin } from 'src/hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import { Link } from 'react-router-dom';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { FormInputText } from 'src/components/form-components/FormInputText';
+import { useMutation } from 'react-query';
+import * as authApi from 'src/api/authApi';
+import { setToken } from '../authSlice';
+import { FormInputPassword } from 'src/components/form-components/FormInputPassword';
 
 // const uiConfig = {
 //   signInFlow: 'popup',
@@ -41,21 +45,36 @@ import * as yup from 'yup';
 const LoginSchema = yup.object().shape({
   username: yup.string().required(),
   password: yup.string().required().min(8),
-  // password: yup.number().required().positive().integer(),
-  // website: yup.string().url()
 });
 
 function Login() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
-  const { status, data: response, mutate: login, isLoading } = useLogin();
-
   const {
     handleSubmit,
+    setError,
     formState: { errors },
     control,
   } = useForm({
     resolver: yupResolver(LoginSchema),
+  });
+
+  const {
+    status,
+    data: response,
+    mutate: login,
+    isLoading,
+  } = useMutation((params: any) => authApi.login(params.username, params.password), {
+    onSuccess: (data) => {
+      dispatch(setToken({ token: data?.access_token }));
+    },
+    onError: (error: any) => {
+      if (error.status === 400) {
+        setError('password', { type: 'custom', message: 'Wrong password. Please input again' });
+      } else {
+        setError('password', { type: 'custom', message: error.data?.message });
+      }
+    },
   });
 
   const onSubmit = (data: any) => {
@@ -81,32 +100,25 @@ function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1, mb: 1 }}>
-          <Controller
+        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
+          <FormInputText
             name="username"
             control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField {...field} margin="normal" fullWidth label="Username" autoFocus />
-            )}
+            label="Username"
+            autoFocus
+            required
+            margin="normal"
           />
-          {errors.username && <p>{errors.username.message}</p>}
-          <Controller
+          {/* <FormInputText
             name="password"
             control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <TextField
-                {...field}
-                margin="normal"
-                fullWidth
-                label="Password"
-                type="password"
-                autoComplete="current-password"
-              />
-            )}
-          />
-          {errors.password && <p>{errors.password.message}</p>}
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            margin="normal"
+            required
+          /> */}
+          <FormInputPassword name="password" control={control} label="Password" />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"

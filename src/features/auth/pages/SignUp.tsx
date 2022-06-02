@@ -17,39 +17,59 @@ import { useTranslation } from 'react-i18next';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import { useLogin } from 'src/hooks/auth';
 import { LoadingButton } from '@mui/lab';
 import { Link } from 'react-router-dom';
 import { useMutation } from 'react-query';
-import { signUp } from 'src/api/authApi';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import * as authApi from 'src/api/authApi';
+import { FormInputText } from 'src/components/form-components/FormInputText';
+import { FormInputPassword } from 'src/components/form-components/FormInputPassword';
+
+const SignUpSchema = yup.object().shape({
+  username: yup.string().required(),
+  password: yup.string().required().min(8),
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  middleName: yup.string(),
+  phone: yup.string().required().length(10),
+  email: yup.string().email(),
+});
 
 function SignUp() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
 
   const {
+    handleSubmit,
+    setError,
+    formState: { errors },
+    control,
+  } = useForm({
+    resolver: yupResolver(SignUpSchema),
+  });
+
+  const {
     status,
     data: response,
-    mutate,
+    mutate: signUp,
     isLoading,
-  } = useMutation((params: any) => signUp(params), {
-    onSuccess: (data, variables, context) => {
+  } = useMutation((params: any) => authApi.signUp(params), {
+    onSuccess: (data) => {
       console.log(data);
-      // store.dispatch(setToken({token: data?.access_token}))
     },
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    mutate({
-      username: data.get('username'),
-      password: data.get('password'),
-      firstName: data.get('firstName'),
-      lastName: data.get('lastName'),
-      middleName: data.get('middleName'),
-      phone: data.get('phone'),
-      email: data.get('email'),
+  const onSubmit = (data: any) => {
+    signUp({
+      username: data.username,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      middleName: data.middleName,
+      phone: data.phone,
+      email: data.email,
     });
   };
 
@@ -69,70 +89,40 @@ function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
+              <FormInputText
                 name="firstName"
-                required
-                fullWidth
-                id="firstName"
+                control={control}
                 label="First Name"
-                autoFocus
+                required
+                autoComplete="given-name"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
+              <FormInputText
                 name="lastName"
+                control={control}
+                label="Last Name"
+                required
                 autoComplete="family-name"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id="middleName"
-                label="Middle name"
-                name="middleName"
-                autoComplete="middleName"
-              />
+              <FormInputText name="middleName" control={control} label="Middle name" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                name="username"
-                autoComplete="Username"
-              />
+              <FormInputText name="username" control={control} label="Username" required />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="phone"
-                label="Phone"
-                name="phone"
-                autoComplete="Phone"
-                type={'number'}
-              />
+              <FormInputText name="phone" control={control} label="Phone" required type="number" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
+              <FormInputText name="email" control={control} label="Email" type="email" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              {/* <TextField
                 required
                 fullWidth
                 name="password"
@@ -140,7 +130,8 @@ function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="new-password"
-              />
+              /> */}
+              <FormInputPassword name="password" control={control} label="Password" />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
