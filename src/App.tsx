@@ -14,6 +14,7 @@ import { selectToken, setUser } from './features/auth/authSlice';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ColorScheme } from './constants/theme';
 import { DarkTheme, LightTheme } from './utils/themes';
+import { SnackbarProvider } from 'notistack';
 
 const Header = lazy(() => import('./components/Header'));
 const Login = lazy(() => import('./features/auth/pages/Login'));
@@ -57,26 +58,28 @@ function App() {
 
   return (
     <ThemeProvider theme={currentTheme === ColorScheme.LIGHT ? LightTheme : DarkTheme}>
-      <CssBaseline />
-      <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={globalLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <SnackbarProvider maxSnack={1}>
+        <CssBaseline />
+        <Backdrop sx={{ color: '#fff', zIndex: () => 9999 }} open={globalLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
 
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Header />}>
-            <Route index element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
-            <Route element={<ProtectedRoute isAllowed={!token} redirectPath="/dashboard" />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/sign-up" element={<SignUp />} />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Header />}>
+              <Route index element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />
+              <Route element={<ProtectedRoute isAllowed={!token} redirectPath="/dashboard" />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/sign-up" element={<SignUp />} />
+              </Route>
+              <Route element={<ProtectedRoute isAllowed={!!token} redirectPath="/login" />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Route>
+              <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
             </Route>
-            <Route element={<ProtectedRoute isAllowed={!!token} redirectPath="/login" />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-            <Route path="*" element={<p>There&apos;s nothing here: 404!</p>} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

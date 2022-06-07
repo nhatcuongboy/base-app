@@ -5,12 +5,13 @@ import {
   Checkbox,
   Container,
   FormControlLabel,
+  FormHelperText,
   Grid,
   TextField,
   Typography,
 } from '@mui/material';
 import Divider from '@mui/material/Divider';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAppDispatch } from 'src/app/hooks';
 import { useTranslation } from 'react-i18next';
 // import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -27,6 +28,7 @@ import { useMutation } from 'react-query';
 import * as authApi from 'src/api/authApi';
 import { setToken } from '../authSlice';
 import { FormInputPassword } from 'src/components/form-components/FormInputPassword';
+import { useSnackbar } from 'notistack';
 
 // const uiConfig = {
 //   signInFlow: 'popup',
@@ -50,6 +52,9 @@ const LoginSchema = yup.object().shape({
 function Login() {
   const { t } = useTranslation(['dashboard']);
   const dispatch = useAppDispatch();
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     handleSubmit,
     setError,
@@ -60,7 +65,6 @@ function Login() {
   });
 
   const {
-    status,
     data: response,
     mutate: login,
     isLoading,
@@ -72,7 +76,7 @@ function Login() {
       if (error.status === 400) {
         setError('password', { type: 'custom', message: 'Wrong password. Please input again' });
       } else {
-        setError('password', { type: 'custom', message: error.data?.message });
+        enqueueSnackbar(error.data?.message, { variant: 'error' });
       }
     },
   });
@@ -118,11 +122,11 @@ function Login() {
             margin="normal"
             required
           /> */}
-          <FormInputPassword name="password" control={control} label="Password" />
-          <FormControlLabel
+          <FormInputPassword name="password" control={control} label="Password" required />
+          {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
-          />
+          /> */}
           <LoadingButton
             type="submit"
             fullWidth

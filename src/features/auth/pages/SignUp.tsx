@@ -5,6 +5,7 @@ import {
   Checkbox,
   Container,
   FormControlLabel,
+  FormHelperText,
   Grid,
   TextField,
   Typography,
@@ -26,6 +27,7 @@ import * as yup from 'yup';
 import * as authApi from 'src/api/authApi';
 import { FormInputText } from 'src/components/form-components/FormInputText';
 import { FormInputPassword } from 'src/components/form-components/FormInputPassword';
+import { useSnackbar } from 'notistack';
 
 const SignUpSchema = yup.object().shape({
   username: yup.string().required(),
@@ -50,6 +52,8 @@ function SignUp() {
     resolver: yupResolver(SignUpSchema),
   });
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const {
     status,
     data: response,
@@ -58,6 +62,9 @@ function SignUp() {
   } = useMutation((params: any) => authApi.signUp(params), {
     onSuccess: (data) => {
       console.log(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error.data?.message, { variant: 'error' });
     },
   });
 
@@ -131,7 +138,7 @@ function SignUp() {
                 id="password"
                 autoComplete="new-password"
               /> */}
-              <FormInputPassword name="password" control={control} label="Password" />
+              <FormInputPassword name="password" control={control} label="Password" required />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
@@ -140,6 +147,19 @@ function SignUp() {
               />
             </Grid>
           </Grid>
+          {/* {errors?.response && (
+            <FormHelperText
+              error
+              sx={{
+                '&::before': {
+                  display: 'inline',
+                  content: '"⚠ "',
+                },
+              }}
+            >
+              {errors.response.message}
+            </FormHelperText>
+          )} */}
           <LoadingButton
             type="submit"
             fullWidth
